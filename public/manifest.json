@@ -1,0 +1,17 @@
+{
+  "name": "nauč-se",
+  "short_name": "Prekladac",
+  "description" : "Vytvořil : Dominik Hradecký",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action":
+  {
+    "default_popup": "index.html"
+  },
+  "content_scripts" : 
+  [{
+    "matches" : ["<all_urls>"],
+    "js" : [ "content.js"],
+    "css" : ["style.css"]
+  }]
+}
