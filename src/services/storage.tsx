@@ -8,7 +8,3 @@ export const StorageGetItem = (key : string) : string | null =>
     return localStorage.getItem(key);
 }
 
-export const StorageRemoveItem = (key : string) =>
-{
-    localStorage.removeItem(key);
-}

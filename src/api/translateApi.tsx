@@ -1,18 +1,43 @@
-export const TranslateApi = async () => 
-{
-    const res = await fetch("https://libretranslate.com/translate", {
-        method: "POST",
-        body: JSON.stringify({
-            q: "hello",
-            source: "auto",
-            target: "cs",
-            format: "text",
-            alternatives: 3,
-            api_key: ""
-        }),
-        headers: { "Content-Type": "application/json" }
-    });
-    const data = await res.json();
-    console.log(data);
+import React, { useState, useEffect } from "react";
 
+interface TranslateApiProps {
+  textToTranslate: string;
 }
+
+export const TranslateApi: React.FC<TranslateApiProps> = ({ textToTranslate }) => {
+  const [translatedText, setTranslatedText] = useState<string>(""); // State for translated text
+
+  // Function to handle translation request
+  const translateText = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/translate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: textToTranslate,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to translate text");
+      }
+
+      const data = await response.json();
+      setTranslatedText(data.translated_text);
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
+  // Use useEffect to call translateText when textToTranslate changes
+  useEffect(() => {
+    if (textToTranslate) {
+      translateText();
+    }
+  }, [textToTranslate]);
+
+  return <>{translatedText ? translatedText : "Translating..."}</>;
+};
