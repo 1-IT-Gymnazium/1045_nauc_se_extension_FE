@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 interface ScrapedData
 {
-    text: string;
+    text : string;
 }
 
 export const GetTextUtils: React.FC = () => {
@@ -10,35 +10,36 @@ export const GetTextUtils: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [url, setUrl] = useState<string>("");
 
-    useEffect(() => {
-        const fetchData = async () => 
+    useEffect(() =>
+    {
+        const fetchData = async () =>
         {
             if (!url) return;
-                try 
+            try
+            {
+                const response = await fetch(`http://localhost:5000/scrape?url=${encodeURIComponent(url)}`);
+                if (!response.ok)
                 {
-                    const response = await fetch(`http://localhost:5000/scrape?url=${encodeURIComponent(url)}`);
-                    if (!response.ok) 
-                    {
-                        throw new Error('Error fetching data');
-                    }
-                    const data: ScrapedData = await response.json();
-                    setScrapedText(data.text);
-                } 
-                catch (err : any)
-                {
-                    console.error(err.message);
-                    setError(err.message);
+                    throw new Error();
                 }
+                const data : ScrapedData = await response.json();
+                setScrapedText(data.text);
+            }
+            catch (err : any)
+            {
+                console.error(err.message);
+                setError(err.message);
+            }
         };
 
         fetchData();
     }, [url]);
 
-    useEffect(() => 
+    useEffect(() =>
     {
-        const getActiveTabUrl = () => 
+        const getActiveTabUrl = () =>
         {
-            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => 
+            chrome.tabs.query({ active : true, currentWindow : true }, (tabs) =>
             {
                 const activeTab = tabs[0];
                 if (activeTab && activeTab.url)

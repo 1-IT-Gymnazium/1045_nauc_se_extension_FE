@@ -1,14 +1,14 @@
-import React, { useState, useEffect} from "react";
+import React, { useState } from "react";
 import { Header } from "./components/header";
-import { LoginPage } from "./features/login";
 import { LoadPage } from "./utils/showPage";
 
-const App : React.FC = () => {
-
+const App: React.FC = () =>
+{
+    const [page, setPage] = useState("/");
     return (
         <div className="page bg-white dark:bg-slate-800">
-            <Header />
-            <LoadPage />
+            <Header setPage={setPage} />
+            <LoadPage page={page} setPage={setPage} />
         </div>
     );
 };

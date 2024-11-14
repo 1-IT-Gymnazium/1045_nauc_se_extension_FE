@@ -6,7 +6,7 @@ export const LightToggleMode = () =>
 {
     const [dark, setDark] = useState(false);
 
-    useEffect(() => 
+    useEffect(() =>
     {
         const storeMode = StorageGetItem("LightToggleMode");
 
@@ -14,7 +14,7 @@ export const LightToggleMode = () =>
         {
             setDark(true);
             applyDarkMode(true);
-        } 
+        }
         else
         {
             setDark(false);
@@ -22,23 +22,25 @@ export const LightToggleMode = () =>
         }
     }, []);
 
-    const applyDarkMode = (isDark : any) => 
+    const applyDarkMode = (isDark : any) =>
     {
         const colorText = isDark ? "white" : "black";
         document.body.classList.toggle("dark", isDark);
 
-        const bodyElements = document.querySelectorAll("body *");
-        bodyElements.forEach((element) => 
+        const bodyElements = Array.from(document.querySelectorAll("body *"))
+            .filter(el => !el.classList.contains("no-style"));
+
+        bodyElements.forEach((el) =>
         {
-            if (element instanceof HTMLElement)
+            if (el instanceof HTMLElement)
             {
-                element.style.color = colorText;
+                el.style.color = colorText;
             }
-            
+
         });
     };
 
-    const darkModeHandler = () => 
+    const darkModeHandler = () =>
     {
         const newDarkMode = !dark;
         setDark(newDarkMode);

@@ -19,29 +19,29 @@ chrome.contextMenus.onClicked.addListener((info) =>
 });
 
 
-const updateStorage = async (info) => 
+const updateStorage = async (text, info) =>
 {
     try
     {
-        await setData("word", info.selectionText);
-    } 
+        await setData(text, info.selectionText);
+    }
     catch (err)
     {
         console.error(err);
     }
 };
-    
 
-const setData = async (key, value) => 
+
+const setData = async (key, value) =>
 {
-    return new Promise((resolve, reject) => 
+    return new Promise((resolve, reject) =>
     {
-            chrome.storage.local.set({ [key]: value }, () => 
+            chrome.storage.local.set({ [key]: value }, () =>
         {
             if (chrome.runtime.lastError)
             {
                 reject(chrome.runtime.lastError);
-            } 
+            }
             else
             {
                 resolve();
