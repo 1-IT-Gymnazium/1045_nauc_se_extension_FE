@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { SignupApi } from "../api/signupApi";
 
 interface LoginPageProps
 {
@@ -7,8 +8,17 @@ interface LoginPageProps
 
 export const SignupPage: React.FC<LoginPageProps> = ({ setPage }) =>
 {
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [signupAttempted, setSignupAttempted] = useState(false);
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
+    const handleSignupClick = () =>
+    {
+        setSignupAttempted(true);
+    };
 
     return (
         <>
@@ -17,20 +27,24 @@ export const SignupPage: React.FC<LoginPageProps> = ({ setPage }) =>
                     <label className="text-sm mb-2 block text-center dark:text-white">Username</label>
                     <div className="relative flex items-center">
                         <input
-                            name="username"
-                            type="text"
-                            className="w-full text-sm border px-4 py-3 rounded-md text-base dark:bg-gray-800 dark:text-white dark:border-gray-600"
-                            placeholder="Enter user name"
+                            name = "username"
+                            type = "text"
+                            value = { username }
+                            onChange = {(e) => setUsername(e.target.value)}
+                            className = "w-full text-sm border px-4 py-3 rounded-md text-base dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                            placeholder = "Enter user name"
                         />
                     </div>
                 </div>
                 <label className="text-sm mb-2 block text-center dark:text-white">Email</label>
                 <div className="relative flex items-center">
                     <input
-                        name="email"
-                        type="email"
-                        className="w-full text-sm border px-4 py-3 rounded-md text-base dark:bg-gray-800 dark:text-white dark:border-gray-600"
-                        placeholder="Enter email"
+                        name = "email"
+                        type = "email"
+                        value = { email }
+                        onChange = {(e) => setEmail(e.target.value)}
+                        className = "w-full text-sm border px-4 py-3 rounded-md text-base dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                        placeholder = "Enter email"
                     />
                 </div>
                 <div>
@@ -40,9 +54,10 @@ export const SignupPage: React.FC<LoginPageProps> = ({ setPage }) =>
                             name="password"
                             type={showPassword ? "text" : "password"}
                             required
+                            value={ password }
+                            onChange={(e) => setPassword(e.target.value)}
                             className="w-full text-sm border border-gray-300 px-4 py-3 rounded-md outline-blue-600 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-                            placeholder="Enter password"
-                        />
+                            placeholder="Enter password"/>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="#bbb"
@@ -57,6 +72,7 @@ export const SignupPage: React.FC<LoginPageProps> = ({ setPage }) =>
                 <div className="!mt-8">
                     <button
                         type="button"
+                        onClick={ handleSignupClick }
                         className="w-full py-3 px-4 text-sm tracking-wide rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none dark:bg-blue-700 dark:hover:bg-blue-800">
                         Register
                     </button>
@@ -65,11 +81,12 @@ export const SignupPage: React.FC<LoginPageProps> = ({ setPage }) =>
                     Have an account?
                     <a
                         onClick={() => setPage("/login")}
-                        className="text-blue-600 hover:underline ml-1 whitespace-nowrap font-semibold dark:text-blue-400">
+                        className="text-blue-600 hover:underline ml-1 whitespace-nowrap font-semibold dark:text-blue-400 no-style">
                         Login here
                     </a>
                 </p>
             </form>
+            {signupAttempted && username && email && password && (<SignupApi username={username} email={email} password={password} />)}
         </>
     );
 }

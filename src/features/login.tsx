@@ -27,7 +27,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ setPage }) =>
                         <input
                             name="username"
                             type="text"
-                            value={username}
+                            value={ username }
                             onChange={(e) => setUsername(e.target.value)}
                             className="w-full text-sm border px-4 py-3 rounded-md text-base dark:bg-gray-800 dark:text-white dark:border-gray-600"
                             placeholder="Enter user name"

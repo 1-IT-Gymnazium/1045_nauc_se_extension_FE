@@ -39,7 +39,7 @@ export const LoginApi : React.FC<LoginApiProps> = ({ username, password }) =>
         {
             console.error(err.message);
         }
-  };
+  }
 
     useEffect(() =>
     {
