@@ -24,7 +24,8 @@ export const Header: React.FC<HeaderProps> = ({ setPage }) => {
     }, []);
 
 
-    const handleLogin = () => {
+    const handleLogin = () =>
+    {
         setPage("/login");
     };
 

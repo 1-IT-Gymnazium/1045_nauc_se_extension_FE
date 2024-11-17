@@ -1,22 +1,77 @@
 import React, { useState } from "react";
-import { SignupApi } from "../api/signupApi";
+import { signupUser } from "../api/signupApi";
+import { LoginApi } from "../api/loginApi";
 
-interface LoginPageProps {
+interface LoginPageProps
+{
     setPage: (page: string) => void;
 }
 
-export const SignupPage: React.FC<LoginPageProps> = ({ setPage }) => {
+export const SignupPage: React.FC<LoginPageProps> = ({ setPage }) =>
+{
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
-    const [level, setLevel] = useState("");
+    const [level, setLevel] = useState("1");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    const [signupAttempted, setSignupAttempted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-    const handleSignupClick = () => {
-        setSignupAttempted(true);
+    const handleSignupClick = async () =>
+    {
+        if (isLoading || isFormSubmitted) return;
+        setIsLoading(true);
+        setIsFormSubmitted(true);
+
+        const result = await signupUser(username, email, password, level);
+
+        if (result.success)
+        {
+
+            try
+            {
+                await LoginApi(username, password);
+
+                const storedValue = JSON.stringify(username);
+
+                if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local)
+                {
+                    chrome.storage.local.set({ user: storedValue });
+                }
+                else
+                {
+                    localStorage.setItem("user", storedValue);
+                }
+                window.location.reload();
+                setPage("/");
+
+            }
+            catch (err: any)
+            {
+                if (err.message === "password" || err.message === "username")
+                {
+                    setErrorMessage("Invalid credentials");
+                }
+                else
+                {
+                    setErrorMessage("An error occurred, please try again later");
+                }
+            }
+            setUsername("");
+            setEmail("");
+            setPassword("");
+            setLevel("1");
+        }
+        else
+        {
+            setErrorMessage(result.error)
+        }
+
+        setIsLoading(false);
+        setIsFormSubmitted(false);
     };
 
     return (
@@ -83,12 +138,14 @@ export const SignupPage: React.FC<LoginPageProps> = ({ setPage }) => {
                         <option value="6">C2 - Proficiency</option>
                     </select>
                 </div>
-                <div className="!mt-8">
+                {errorMessage && <p className="text-red-500 text-sm text-center no-style">{errorMessage}</p>}
+                <div className="flex justify-center mt-4">
                     <button
                         type="button"
                         onClick={handleSignupClick}
-                        className="w-full py-3 px-4 text-sm tracking-wide rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none dark:bg-blue-700 dark:hover:bg-blue-800">
-                        Register
+                        disabled={isLoading || isFormSubmitted}
+                        className={`w-full py-3 px-4 text-sm tracking-wide rounded-lg ${isLoading ? 'bg-gray-500' : 'bg-blue-600'} hover:bg-blue-700 focus:outline-none dark:bg-blue-700 dark:hover:bg-blue-800`}>
+                        {isLoading ? "Signing Up..." : "Register"}
                     </button>
                 </div>
                 <p className="text-sm !mt-4 text-center dark:text-white">
@@ -100,9 +157,6 @@ export const SignupPage: React.FC<LoginPageProps> = ({ setPage }) => {
                     </a>
                 </p>
             </form>
-            {signupAttempted && username && email && password && (
-                <SignupApi username={username} email={email} level={level} password={password} />
-            )}
         </>
     );
 };

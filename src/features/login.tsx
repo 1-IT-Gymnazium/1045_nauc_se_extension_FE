@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { LoginApi } from "../api/loginApi";
 
-interface LoginPageProps {
+interface LoginPageProps
+{
     setPage: (page: string) => void;
 }
 
-export const LoginPage: React.FC<LoginPageProps> = ({ setPage }) => {
+export const LoginPage: React.FC<LoginPageProps> = ({ setPage }) =>
+{
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -13,30 +15,42 @@ export const LoginPage: React.FC<LoginPageProps> = ({ setPage }) => {
 
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-    const handleLoginClick = async () => {
+    const handleLoginClick = async () =>
+    {
         setErrorMessage("");
 
-        if (!username || !password) {
-            setErrorMessage("Please enter both username and password.");
+        if (!username || !password)
+        {
+            setErrorMessage("Enter username & password");
             return;
         }
 
-        try {
+        try
+        {
             await LoginApi(username, password);
 
-            const storedValue = JSON.stringify(username); // Serialize username
+            const storedValue = JSON.stringify(username);
 
-            if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+            if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local)
+            {
                 chrome.storage.local.set({ user: storedValue });
-            } else {
+            }
+            else
+            {
                 localStorage.setItem("user", storedValue);
             }
             window.location.reload();
             setPage("/");
-        } catch (err: any) {
-            if (err.message === "password" || err.message === "username") {
+
+        }
+        catch (err: any)
+        {
+            if (err.message === "password" || err.message === "username")
+            {
                 setErrorMessage("Invalid credentials");
-            } else {
+            }
+            else
+            {
                 setErrorMessage("An error occurred, please try again later");
             }
         }
