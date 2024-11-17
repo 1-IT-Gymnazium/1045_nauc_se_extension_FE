@@ -13,10 +13,6 @@
   font-style: normal;
 }
 
-body {
-  color: black;
-}
-
 .noselect {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -25,13 +21,7 @@ body {
   user-select: none;
 }
 
-.hover-word {
-  -webkit-transition: color 0.3s ease;
-  transition: color 0.3s ease;
-}
-
-
 .page {
-  width: 20rem;
-  height: 30rem;
+  width: 22rem;
+  height: 36rem;
 }

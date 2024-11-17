@@ -1,53 +1,35 @@
-import React, { useEffect } from "react";
+import { setValData } from "../services/getDataChrome";
 
-interface LoginApiProps
+export const LoginApi = async (username: string, password: string) =>
 {
-    username : string;
-    password : string;
-}
-
-export const LoginApi : React.FC<LoginApiProps> = ({ username, password }) =>
-{
-    const checkUser = async () =>
+    try
     {
-        try
+        const response = await fetch("http://127.0.0.1:5000/loginuser",
         {
-            const response = await fetch("http://127.0.0.1:5000/loginuser",
+            method : "POST",
+            headers :
             {
-                method : "POST",
-                headers :
-                {
-                    "Content-Type" : "application/json",
-                },
-                body: JSON.stringify(
-                {
-                    name : username,
-                    password : password,
-                }),
-            });
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name: username,
+                password: password,
+            }),
+        });
 
         if (!response.ok)
         {
             const errorData = await response.json();
-            throw new Error(errorData.error);
+            throw new Error(errorData.error || "Error occured");
         }
 
         const data = await response.json();
-        alert("Login successful!");
-        }
-        catch (err: any)
-        {
-            console.error(err.message);
-        }
-  }
+        setValData("user", data)
+        return data;
 
-    useEffect(() =>
+    }
+    catch (err : any)
     {
-        if (username && password)
-        {
-            checkUser();
-        }
-    }, [username, password]);
-
-  return <></>;
+        throw err;
+    }
 };
