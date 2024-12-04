@@ -1,8 +1,10 @@
+import { Globals } from "..";
+
 export const signupUser = async (username: string, email: string, password: string, level: string) =>
 {
     try
     {
-        const response = await fetch("http://127.0.0.1:5000/signupuser",
+        const response = await fetch(`${Globals.apiUrl}/signupuser`,
         {
             method : "POST",
             headers :
@@ -19,7 +21,7 @@ export const signupUser = async (username: string, email: string, password: stri
         else
         {
             const data = await response.json();
-            return { success: false, error: data.error || "Signup failed" };
+            return { success: false, error: data.error || "Signup Error" };
         }
     }
     catch (error)

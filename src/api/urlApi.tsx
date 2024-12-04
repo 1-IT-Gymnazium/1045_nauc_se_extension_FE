@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Globals } from "..";
 
 interface UrlApiProps
 {
@@ -13,7 +14,7 @@ export const UrlApi: React.FC<UrlApiProps> = ({ url }) =>
     {
         try
         {
-            const response = await fetch("http://127.0.0.1:5000/url_proccess",
+            const response = await fetch(`${Globals.apiUrl}/url_proccess`,
             {
                 method : "POST",
                 headers :

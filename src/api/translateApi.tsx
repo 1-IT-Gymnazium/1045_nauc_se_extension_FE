@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Globals } from "..";
 
 interface TranslateApiProps
 {
@@ -13,7 +14,7 @@ export const TranslateApi: React.FC<TranslateApiProps> = ({ textToTranslate }) =
     {
         try
         {
-            const response = await fetch("http://127.0.0.1:5000/translate",
+            const response = await fetch(`${Globals.apiUrl}/translate`,
             {
                 method : "POST",
                 headers :

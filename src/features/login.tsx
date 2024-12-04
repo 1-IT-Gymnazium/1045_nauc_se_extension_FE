@@ -1,18 +1,15 @@
 import React, { useState } from "react";
 import { LoginApi } from "../api/loginApi";
+import { useNavigate } from "react-router-dom";
 
-interface LoginPageProps
-{
-    setPage: (page: string) => void;
-}
-
-export const LoginPage: React.FC<LoginPageProps> = ({ setPage }) =>
+export const LoginPage: React.FC = () =>
 {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
+    const navigate = useNavigate();
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
     const handleLoginClick = async () =>
@@ -25,22 +22,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ setPage }) =>
             return;
         }
 
-        try
-        {
+        try {
             await LoginApi(username, password);
 
             const storedValue = JSON.stringify(username);
 
-            if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local)
-            {
-                chrome.storage.local.set({ user: storedValue });
-            }
-            else
-            {
-                localStorage.setItem("user", storedValue);
-            }
+            if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {chrome.storage.local.set({ user: storedValue });}
+            else { localStorage.setItem("user", storedValue);}
+
+            navigate("/");
             window.location.reload();
-            setPage("/");
 
         }
         catch (err: any)
@@ -99,14 +90,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ setPage }) =>
             <div className="mt-4">
                 <button
                     onClick={handleLoginClick}
-                    className="w-full py-3 px-6 rounded-lg text-white bg-blue-600 hover:bg-blue-700">
+                    className="w-full py-3 px-4 text-sm tracking-wide rounded-lg hover:bg-blue-700 focus:outline-none dark:bg-blue-700 dark:hover:bg-blue-800">
                     Login
                 </button>
             </div>
             <p className="text-sm !mt-8 text-center dark:text-white">
                 Don't have an account?
                 <a
-                    onClick={() => setPage("/signup")}
+                    onClick={() => navigate("/signup")}
                     className="text-blue-600 hover:underline ml-1 whitespace-nowrap font-semibold dark:text-blue-400 no-style">
                     Register here
                 </a>

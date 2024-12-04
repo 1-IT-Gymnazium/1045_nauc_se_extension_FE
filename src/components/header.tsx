@@ -1,37 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { getValData } from "../services/getDataChrome";
+import { getValData, removeValData } from "../services/getDataChrome";
 import { LightToggleMode } from "../utils/lightToggleMode";
+import { Link, useNavigate } from "react-router-dom";
 
-interface HeaderProps {
-    setPage: React.Dispatch<React.SetStateAction<string>>;
-}
-
-export const Header: React.FC<HeaderProps> = ({ setPage }) => {
+export const Header : React.FC = () =>
+{
     const [userExist, setUserExist] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const checkUserExistence = async () =>
         {
             const userData = await getValData("user");
-            if (userData !== null)
-            {
-                const userDataTrim = userData.slice(1, userData.length - 1);
+            if (userData && userData.trim() !== "") {
+                const userDataTrim = userData.slice(1, -1);
                 setUserExist(userDataTrim);
+            }
+            else
+            {
+                removeValData("user");
             }
         };
 
         checkUserExistence();
     }, []);
 
-
-    const handleLogin = () =>
-    {
-        setPage("/login");
+    const handleLogin = () => {
+        navigate("/login");
     };
 
-    const handleNavigateHome = () =>
-    {
-        setPage("/");
+    const handleNavigateHome = () => {
+        navigate("/");
     };
 
     return (
@@ -40,12 +39,13 @@ export const Header: React.FC<HeaderProps> = ({ setPage }) => {
                 <div className="w-3/5">
                     <div className="flex items-center justify-center">
                         <div className="flex items-center justify-between">
-                            <a
+                            <Link
+                                to="/"
                                 onClick={handleNavigateHome}
                                 className="text-base no-underline hover:underline noselect"
                             >
                                 NaučSe!
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -57,11 +57,13 @@ export const Header: React.FC<HeaderProps> = ({ setPage }) => {
                                     {userExist}
                                 </span>
                             ) : (
-                                <a
+                                <Link
+                                    to="/login"
                                     onClick={handleLogin}
-                                    className="items-center justify-center text-base no-underline mr-3 hover:underline noselect">
+                                    className="items-center justify-center text-base no-underline mr-3 hover:underline noselect"
+                                >
                                     Login
-                                </a>
+                                </Link>
                             )}
                             <LightToggleMode />
                         </div>

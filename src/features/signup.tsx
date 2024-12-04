@@ -1,14 +1,9 @@
 import React, { useState } from "react";
 import { signupUser } from "../api/signupApi";
 import { LoginApi } from "../api/loginApi";
+import { useNavigate } from "react-router-dom";
 
-interface LoginPageProps
-{
-    setPage: (page: string) => void;
-}
-
-export const SignupPage: React.FC<LoginPageProps> = ({ setPage }) =>
-{
+export const SignupPage: React.FC = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [level, setLevel] = useState("1");
@@ -17,6 +12,8 @@ export const SignupPage: React.FC<LoginPageProps> = ({ setPage }) =>
     const [isLoading, setIsLoading] = useState(false);
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+
+    const navigate = useNavigate();
 
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -28,46 +25,35 @@ export const SignupPage: React.FC<LoginPageProps> = ({ setPage }) =>
 
         const result = await signupUser(username, email, password, level);
 
-        if (result.success)
-        {
-
-            try
-            {
+        if (result.success) {
+            try {
                 await LoginApi(username, password);
 
                 const storedValue = JSON.stringify(username);
 
-                if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local)
-                {
+                if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
                     chrome.storage.local.set({ user: storedValue });
-                }
-                else
-                {
+                } else {
                     localStorage.setItem("user", storedValue);
                 }
-                window.location.reload();
-                setPage("/");
 
-            }
-            catch (err: any)
-            {
-                if (err.message === "password" || err.message === "username")
-                {
+                navigate("/");
+                setTimeout(() => {
+                  window.location.reload();
+                }, 0);
+            } catch (err: any) {
+                if (err.message === "username") {
                     setErrorMessage("Invalid credentials");
-                }
-                else
-                {
+                } else if (err.message === "password") {
+                    setErrorMessage("Password not secure enough");
+                } else {
                     setErrorMessage("An error occurred, please try again later");
                 }
-            }
-            setUsername("");
-            setEmail("");
-            setPassword("");
-            setLevel("1");
+
         }
-        else
+        } else
         {
-            setErrorMessage(result.error)
+            setErrorMessage(result.error);
         }
 
         setIsLoading(false);
@@ -112,6 +98,7 @@ export const SignupPage: React.FC<LoginPageProps> = ({ setPage }) =>
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full text-sm border border-gray-300 px-4 py-3 rounded-md outline-blue-600 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                             placeholder="Enter password"
+                            minLength={6}
                         />
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -151,7 +138,7 @@ export const SignupPage: React.FC<LoginPageProps> = ({ setPage }) =>
                 <p className="text-sm !mt-4 text-center dark:text-white">
                     Already have an account?
                     <a
-                        onClick={() => setPage("/login")}
+                        onClick={() => navigate("/login")}
                         className="text-blue-600 hover:underline ml-1 whitespace-nowrap font-semibold dark:text-blue-400 no-style">
                         Login here
                     </a>

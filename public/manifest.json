@@ -22,5 +22,13 @@
     "action" :
     {
         "default_popup": "index.html"
-    }
+    },
+
+    "host_permissions" :
+    [
+        "https://*/*",
+        "http://*/*",
+        "chrome-extension://jfkpfocnjofoibmcihgfhibpeionpidf/*"
+    ]
+
 }
