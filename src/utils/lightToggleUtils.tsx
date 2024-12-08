@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { IoMoon, IoSunny } from "react-icons/io5";
-import { StorageSetItem, StorageGetItem } from "./../services/storage";
+import { StorageSetItem, StorageGetItem } from "../services/storage";
 
 export const LightToggleMode = () =>
 {

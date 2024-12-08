@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getValData, removeValData } from "../services/getDataChrome";
-import { LightToggleMode } from "../utils/lightToggleMode";
+import { LightToggleMode } from "../utils/lightToggleUtils";
 import { Link, useNavigate } from "react-router-dom";
 
 export const Header : React.FC = () =>
@@ -8,7 +8,8 @@ export const Header : React.FC = () =>
     const [userExist, setUserExist] = useState<string | null>(null);
     const navigate = useNavigate();
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         const checkUserExistence = async () =>
         {
             const userData = await getValData("user");

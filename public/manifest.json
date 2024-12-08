@@ -1,34 +1,35 @@
 {
     "version": "1.0",
     "name": "nauč-se",
-    "short_name": "Prekladac",
-    "description" : "Vytvořil : Dominik Hradecký",
+    "short_name": "Translator",
+    "description": "Vytvořil : Dominik Hradecký",
     "manifest_version": 3,
-
-    "permissions" :
-    [
+    "permissions": [
         "tabs",
         "storage",
         "activeTab",
         "scripting",
-        "contextMenus"
+        "contextMenus",
+        "alarms"
     ],
 
-    "background" :
+    "background":
     {
         "service_worker": "background.js"
     },
 
-    "action" :
-    {
+    "action": {
         "default_popup": "index.html"
     },
-
-    "host_permissions" :
-    [
+    "host_permissions": [
+        "<all_urls>",
         "https://*/*",
-        "http://*/*",
-        "chrome-extension://jfkpfocnjofoibmcihgfhibpeionpidf/*"
+        "http://*/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["content.js"]
+        }
     ]
-
 }

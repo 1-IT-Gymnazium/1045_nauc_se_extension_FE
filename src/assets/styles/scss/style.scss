@@ -58,3 +58,12 @@
 .card__front,
 .card__back { backface-visibility: hidden;}
 .card__back{ transform: rotateY(.5turn);}
+
+
+.word
+{
+    &-highlight
+    {
+        background-color: red;
+    }
+}

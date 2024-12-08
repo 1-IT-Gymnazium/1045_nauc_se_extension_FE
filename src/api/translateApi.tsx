@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Globals } from "..";
 
-interface TranslateApiProps
-{
-    textToTranslate : string;
-}
-
-export const TranslateApi: React.FC<TranslateApiProps> = ({ textToTranslate }) =>
+export const TranslateApi = (textToTranslate : string) =>
 {
     const [translatedText, setTranslatedText] = useState<string>("");
 
@@ -38,7 +33,7 @@ export const TranslateApi: React.FC<TranslateApiProps> = ({ textToTranslate }) =
         }
         catch (err: any)
         {
-            console.error(err.message);
+            throw err;
         }
     };
 
