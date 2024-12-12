@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { GetUrlUtils } from "./getUrlUtils";
 import { GetTextApi } from "../api/scrapeTextApi";
+import { getValData } from "../services/getDataChrome";
 
 export const useScrapedData = () => {
   const [scrapedData, setScrapedData] = useState<string | null>(null);
@@ -16,7 +17,7 @@ export const useScrapedData = () => {
 
       setLoading(true);
       try {
-        const level = "3"; // Replace with dynamic level if needed
+        const level = await getValData("level");
         const data = await GetTextApi(url, level);
         setScrapedData(JSON.stringify(data, null, 2)); // Format data as JSON string
       } catch (err) {

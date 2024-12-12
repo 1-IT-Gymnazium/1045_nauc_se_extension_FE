@@ -131,7 +131,7 @@ export const SignupPage: React.FC = () => {
                         type="button"
                         onClick={handleSignupClick}
                         disabled={isLoading || isFormSubmitted}
-                        className={`w-full py-3 px-4 text-sm tracking-wide rounded-lg ${isLoading ? 'bg-gray-500' : 'bg-blue-600'} hover:bg-blue-700 focus:outline-none dark:bg-blue-700 dark:hover:bg-blue-800`}>
+                        className={`text-sm w-full py-3 px-4 text-sm tracking-wide rounded-lg ${isLoading ? 'bg-gray-500' : 'bg-blue-600'} hover:bg-blue-700 focus:outline-none dark:bg-blue-700 dark:hover:bg-blue-800 `}>
                         {isLoading ? "Signing Up..." : "Register"}
                     </button>
                 </div>

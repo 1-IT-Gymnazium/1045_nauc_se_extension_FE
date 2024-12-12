@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Globals } from "..";
-import { error } from "console";
 
 export const GetTextApi = async (url: string, level: string) =>
 {
@@ -25,7 +24,7 @@ export const GetTextApi = async (url: string, level: string) =>
 
         if (!response.ok)
         {
-            return error;
+            return "error";
         }
 
         return data;

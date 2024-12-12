@@ -25,11 +25,5 @@
         "<all_urls>",
         "https://*/*",
         "http://*/*"
-    ],
-    "content_scripts": [
-        {
-            "matches": ["<all_urls>"],
-            "js": ["content.js"]
-        }
     ]
 }

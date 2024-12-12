@@ -90,7 +90,7 @@ export const LoginPage: React.FC = () =>
             <div className="mt-4">
                 <button
                     onClick={handleLoginClick}
-                    className="w-full py-3 px-4 text-sm tracking-wide rounded-lg hover:bg-blue-700 focus:outline-none dark:bg-blue-700 dark:hover:bg-blue-800">
+                    className="w-full py-3 px-6 rounded-lg text-white bg-blue-600 hover:bg-blue-700 no-style text-sm">
                     Login
                 </button>
             </div>

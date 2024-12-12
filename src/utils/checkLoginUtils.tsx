@@ -23,6 +23,7 @@ export const CheckLoginUtils = () =>
             } else
             {
                 removeValData("user");
+                removeValData("level");
                 navigate("/login");
                 window.location.reload();
             }
