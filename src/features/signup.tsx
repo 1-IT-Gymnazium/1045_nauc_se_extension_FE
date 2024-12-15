@@ -17,8 +17,7 @@ export const SignupPage: React.FC = () => {
 
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-    const handleSignupClick = async () =>
-    {
+    const handleSignupClick = async () => {
         if (isLoading || isFormSubmitted) return;
         setIsLoading(true);
         setIsFormSubmitted(true);
@@ -39,26 +38,54 @@ export const SignupPage: React.FC = () => {
 
                 navigate("/");
                 setTimeout(() => {
-                  window.location.reload();
+                    window.location.reload();
                 }, 0);
             } catch (err: any) {
-                if (err.message === "username") {
-                    setErrorMessage("Invalid credentials");
-                } else if (err.message === "password") {
-                    setErrorMessage("Password not secure enough");
-                } else {
-                    setErrorMessage("An error occurred, please try again later");
-                }
+                console.error("Login API error:", err); // Log the full error here
 
-        }
-        } else
-        {
-            setErrorMessage(result.error);
+                if (err.response && err.response.data && err.response.data.error) {
+                    const backendError = err.response.data.error; // Get error from the backend response
+                    switch (backendError) {
+                        case "password-security-low":
+                            setErrorMessage("Password does not meet security requirements.");
+                            break;
+                        case "email-used":
+                            setErrorMessage("This email is already in use.");
+                            break;
+                        case "firebase-email-error":
+                            setErrorMessage("Error checking email availability. Please try again.");
+                            break;
+                        case "username-used":
+                            setErrorMessage("This username is already taken.");
+                            break;
+                        case "firebase-username-error":
+                            setErrorMessage("Error checking username availability. Please try again.");
+                            break;
+                        case "password-hashing-error":
+                            setErrorMessage("Error hashing password. Please try again.");
+                            break;
+                        case "user-creation-error":
+                            setErrorMessage("Error creating user. Please try again.");
+                            break;
+                        case "word-bank-creation-error":
+                            setErrorMessage("Error creating word bank entry. Please try again.");
+                            break;
+                        default:
+                            setErrorMessage("An unexpected error occurred. Please try again later.");
+                            break;
+                    }
+                } else {
+                    setErrorMessage("An error occurred during login. Please try again later.");
+                }
+            }
+        } else {
+            setErrorMessage(result.error || "An unexpected error occurred.");
         }
 
         setIsLoading(false);
         setIsFormSubmitted(false);
     };
+
 
     return (
         <>
@@ -126,7 +153,7 @@ export const SignupPage: React.FC = () => {
                     </select>
                 </div>
                 {errorMessage && <p className="text-red-500 text-sm text-center no-style">{errorMessage}</p>}
-                <div className="flex justify-center mt-4">
+                <div className="flex justify-center mt-7">
                     <button
                         type="button"
                         onClick={handleSignupClick}

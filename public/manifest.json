@@ -4,7 +4,8 @@
     "short_name": "Translator",
     "description": "Vytvořil : Dominik Hradecký",
     "manifest_version": 3,
-    "permissions": [
+    "permissions" :
+    [
         "tabs",
         "storage",
         "activeTab",
@@ -13,15 +14,18 @@
         "alarms"
     ],
 
-    "background":
+    "background" :
     {
-        "service_worker": "background.js"
+        "service_worker" : "background.js"
     },
 
-    "action": {
-        "default_popup": "index.html"
+    "action" :
+    {
+
+        "default_popup" : "index.html"
     },
-    "host_permissions": [
+    "host_permissions" :
+    [
         "<all_urls>",
         "https://*/*",
         "http://*/*"

@@ -116,7 +116,6 @@ const storeWordsAndHighlight = (wordIdMapping: Record<string, string>) => {
 
                             if (clickedWord) {
                                 try {
-                                    // Retrieve existing words data from storage
                                     chrome.storage.local.get(['words-data'], (result) => {
                                         const existingWords: string[] = result['words-data'] || [];
 

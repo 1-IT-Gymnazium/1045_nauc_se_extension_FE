@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { getValData } from "../services/getDataChrome";
 import { Globals } from "..";
 
 export const GetTextApi = async (url: string, level: string) =>
 {
+
+    const userId = await getValData("userId");
     try
     {
 
@@ -17,6 +19,7 @@ export const GetTextApi = async (url: string, level: string) =>
             {
                 url: url,
                 level: level,
+                user_id : userId,
             }),
         });
 

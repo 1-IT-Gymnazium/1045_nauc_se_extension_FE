@@ -19,7 +19,7 @@ export const useScrapedData = () => {
       try {
         const level = await getValData("level");
         const data = await GetTextApi(url, level);
-        setScrapedData(JSON.stringify(data, null, 2)); // Format data as JSON string
+        setScrapedData(JSON.stringify(data, null, 2));
       } catch (err) {
         setError("Failed to fetch data");
         console.error(err);

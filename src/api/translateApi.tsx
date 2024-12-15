@@ -1,49 +1,30 @@
-import React, { useState, useEffect } from "react";
 import { Globals } from "..";
 
-export const TranslateApi = (textToTranslate : string) =>
+export const TranslateApi = async (textToTranslate: string): Promise<string> =>
 {
-    const [translatedText, setTranslatedText] = useState<string>("");
-
-    const translateText = async () =>
+    try
     {
-        try
+        const response = await fetch(`${Globals.apiUrl}/translate`,
         {
-            const response = await fetch(`${Globals.apiUrl}/translate`,
+            method : "POST",
+            headers :
             {
-                method : "POST",
-                headers :
-                {
-                    "Content-Type": "application/json",
-                },
-                body : JSON.stringify(
-                {
-                    text : textToTranslate,
-                }),
-            });
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ text: textToTranslate }),
+        });
 
-            if (!response.ok)
-            {
-                const errorData = await response.json();
-                throw new Error(errorData.error);
-            }
-
-            const data = await response.json();
-            setTranslatedText(data.translated_text);
-        }
-        catch (err: any)
+        if (!response.ok)
         {
-            throw err;
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Translation failed");
         }
-    };
 
-    useEffect(() =>
+        const data = await response.json();
+        return data.translated_text;
+
+    } catch (err)
     {
-        if (textToTranslate)
-        {
-            translateText();
-        }
-    }, [textToTranslate]);
-
-    return <>{translatedText ? translatedText : "Translating..."}</>;
+        return "Translation failed";
+    }
 };

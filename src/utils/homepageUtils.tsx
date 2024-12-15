@@ -1,5 +1,7 @@
 import { CheckLoginUtils } from "./checkLoginUtils";
+import { WordBankAddApi } from "../api/wordBankAddApi";
 import { getValData, setValData } from "../services/getDataChrome";
+import { Exception } from "sass";
 
 export const HomepageUtils: React.FC = () =>
 {
@@ -20,7 +22,21 @@ export const removeAddedWords = async (word: string, index: number) =>
     }
 };
 
+export const addWordsToBank = async (user_id : string, word : string) =>
+{
+    try
+    {
+        WordBankAddApi(user_id, word);
+    }
+    catch (err)
+    {
 
-const removeItemByName = (arr: string[], name: string): string[] => {
+    }
+
+}
+
+
+const removeItemByName = (arr: string[], name: string): string[] =>
+{
     return arr.filter(item => item !== name);
-  };
+};

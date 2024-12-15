@@ -6,8 +6,8 @@ export const signupUser = async (username: string, email: string, password: stri
     {
         const response = await fetch(`${Globals.apiUrl}/signupuser`,
         {
-            method : "POST",
-            headers :
+            method: "POST",
+            headers:
             {
                 "Content-Type": "application/json",
             },
@@ -26,7 +26,6 @@ export const signupUser = async (username: string, email: string, password: stri
     }
     catch (error)
     {
-        return { success: false, error: "Error" };
+        return { success: false, error: "An unexpected error occurred. Please try again later." };
     }
 };
-

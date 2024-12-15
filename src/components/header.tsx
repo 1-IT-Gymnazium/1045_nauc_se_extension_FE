@@ -26,13 +26,10 @@ export const Header : React.FC = () =>
         checkUserExistence();
     }, []);
 
-    const handleLogin = () => {
-        navigate("/login");
-    };
+    const handleLogin = () => navigate("/login");
 
-    const handleNavigateHome = () => {
-        navigate("/");
-    };
+    const handleNavigateHome = () => navigate("/");
+
 
     return (
         <div className="flex items-center justify-center h-min">

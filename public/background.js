@@ -50,4 +50,4 @@ const setData = async (key, value) =>
     });
 };
 
-//         "chrome-extension://jfkpfocnjofoibmcihgfhibpeionpidf/*"
+// "chrome-extension://jfkpfocnjofoibmcihgfhibpeionpidf/*"
