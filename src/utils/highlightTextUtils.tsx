@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
 import { useScrapedData } from "./scrapeTextUtils";
-import { getValData, setValData } from "../services/getDataChrome";
+import { LoadingBlock } from "../blocks/loadingBlock";
 
-declare global {
+declare global
+{
     interface Window {
-        getValData: (key: string) => Promise<any>;
-        setValData: (key: string, value: any) => Promise<void>;
         captureWord: (event: MouseEvent) => void;
     }
 }
 
-export const WordHighlighter: React.FC = () => {
+export const WordHighlighter: React.FC = () =>
+{
     const { scrapedData, loading, error } = useScrapedData();
 
     useEffect(() => {
@@ -21,11 +21,15 @@ export const WordHighlighter: React.FC = () => {
         }
     }, [scrapedData, loading]);
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <LoadingBlock/>
     if (error) return <div>Error: {error}</div>;
 
     return null;
 };
+
+
+
+
 
 const WordsToHighlight = (text: string): string[] => {
     const words = text.match(/\b\w+\b/g);
@@ -112,14 +116,15 @@ const storeWordsAndHighlight = (wordIdMapping: Record<string, string>) => {
 
                         window.captureWord = async (event: MouseEvent) => {
                             const clickedElement = event.target as HTMLElement;
-                            const clickedWord = clickedElement.dataset.word;
+                            const clickedWord = clickedElement.dataset.word?.toLowerCase();
 
                             if (clickedWord) {
                                 try {
-                                    chrome.storage.local.get(['words-data'], (result) => {
+                                    chrome.storage.local.get(['words-data'], (result) =>
+                                    {
                                         const existingWords: string[] = result['words-data'] || [];
 
-                                        if (!existingWords.includes(clickedWord)) {
+                                        if (!existingWords.includes(clickedWord.toLowerCase())) {
                                             existingWords.push(clickedWord);
 
                                             chrome.storage.local.set({ 'words-data': existingWords });

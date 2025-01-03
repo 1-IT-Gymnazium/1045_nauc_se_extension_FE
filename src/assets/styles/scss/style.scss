@@ -35,10 +35,6 @@
 
 .page
 {
-
-    border-style: solid;
-    border-color: red;
-
     &-small
     {
         width: 22rem;
@@ -50,45 +46,3 @@
         height: 100vh;
     }
 }
-
-
-.card { perspective: 800px;}
-.card__content {transform-style: preserve-3d;}
-.card:hover .card__content {transform: rotateY(.5turn);}
-
-.card__front,
-.card__back { backface-visibility: hidden;}
-.card__back{ transform: rotateY(.5turn);}
-
-
-.word
-{
-    &-highlight
-    {
-        background-color: red;
-    }
-}
-
-.highlighted-word {
-    color: red;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.add-word-box {
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    padding: 8px;
-    border-radius: 4px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-
-.highlighted-word {
-    position: relative;
-    z-index: 1000; /* Ensures words are clickable */
-  }
-
-  div[data-id] {
-    z-index: 9999; /* Ensure popup appears above everything else */
-  }

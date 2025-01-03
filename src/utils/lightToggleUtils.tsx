@@ -49,7 +49,7 @@ export const LightToggleMode = () =>
     };
 
     return (
-        <div className="flex items-right justify-center mt-1.5">
+        <div className="flex items-right justify-center">
             <button onClick={darkModeHandler}>
                 {
                     dark ? <IoSunny className="text-base" style={{ color: "white" }} /> :

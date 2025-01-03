@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
-import { Homepage } from "./pages/homepage";
-import { LearnPage } from "./pages/learningpage";
+import { Homepage } from "./pages/homePage";
+import { LearnPage } from "./pages/learningPage";
 import { Header } from "./components/header";
 import { SignupPage } from "./features/signup";
 import { LoginPage } from "./features/login";
