@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { getValData, removeValData } from "../services/getDataChrome";
-import { LightToggleMode } from "../utils/lightToggleUtils";
 import { Link, useNavigate } from "react-router-dom";
+import { LightToggleMode } from "../utils/lightToggleUtils";
+import { getValData, removeValData } from "../services/getDataChrome";
+
+/**
+ * Header component that displays navigation links, user information, and light mode toggle.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered header component.
+ */
 
 export const Header : React.FC = () =>
 {
@@ -13,7 +20,8 @@ export const Header : React.FC = () =>
         const checkUserExistence = async () =>
         {
             const userData = await getValData("user");
-            if (userData && userData.trim() !== "") {
+            if (userData && userData.trim() !== "")
+            {
                 const userDataTrim = userData.slice(1, -1);
                 setUserExist(userDataTrim);
             }

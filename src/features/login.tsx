@@ -2,6 +2,14 @@ import React, { useState } from "react";
 import { LoginApi } from "../api/loginApi";
 import { useNavigate } from "react-router-dom";
 
+
+/**
+ *  LoginPage component for user to log in.
+ *
+* @component
+* @returns {JSX.Element} The SignupPage component.
+*/
+
 export const LoginPage: React.FC = () =>
 {
     const [username, setUsername] = useState("");
@@ -12,9 +20,13 @@ export const LoginPage: React.FC = () =>
     const navigate = useNavigate();
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
+    /**
+     * Handles the login click event when the user wants to log in.
+    * @async
+    * @function
+    */
     const handleLoginClick = async () =>
     {
-        setErrorMessage("");
 
         if (!username || !password)
         {
@@ -42,7 +54,7 @@ export const LoginPage: React.FC = () =>
             }
             else
             {
-                setErrorMessage("An error occurred, please try again later");
+                setErrorMessage("Error occurred.");
             }
         }
     };
@@ -90,7 +102,7 @@ export const LoginPage: React.FC = () =>
             <div className="mt-4">
                 <button
                     onClick={handleLoginClick}
-                    className="w-full py-3 px-6 rounded-lg text-white bg-blue-600 hover:bg-blue-700 no-style text-sm">
+                    className={`text-sm w-full py-3 px-4 text-sm tracking-wide rounded-lg hover:bg-blue-700 focus:outline-none dark:bg-blue-700 dark:hover:bg-blue-800 no-style`} >
                     Login
                 </button>
             </div>

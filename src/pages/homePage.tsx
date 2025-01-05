@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { WordHighlighter } from "../utils/highlightTextUtils";
 import { getValData } from "../services/getDataChrome";
 import { removeAddedWords, addWordsToBank } from "../utils/homepageUtils";
@@ -9,9 +8,17 @@ import { CheckLoginUtils } from "../utils/checkLoginUtils";
 import { TranslateApi } from "../api/translateApi";
 import { setValData } from "../services/getDataChrome";
 
+
+/**
+ * Homepage
+ *
+ * @component
+ * @returns {React.ReactElement} The rendered Homepage component.
+ */
+
+
 export const Homepage: React.FC = () =>
 {
-    const navigate = useNavigate();
     const [userId, setUserId] = useState("");
     const [addedWords, setAddedWords] = useState<string[]>([]);
     const [translations, setTranslations] = useState<Record<string, string>>({});
@@ -27,8 +34,7 @@ export const Homepage: React.FC = () =>
 
     useEffect(() =>
     {
-        const getWords = async () =>
-        {
+        const getWords = async () => {
             const storedWords = await getValData("words-data");
 
             if (storedWords) setAddedWords(storedWords);
@@ -38,11 +44,38 @@ export const Homepage: React.FC = () =>
         getWords();
     }, []);
 
-    useEffect(() => {
+
+    useEffect(() =>
+    {
+        chrome.storage.local.get("selectedText", (result) =>
+        {
+            if (result.selectedText)
+            {
+                setAddedWords((currentWords) =>
+                {
+
+                    if (currentWords.includes(result.selectedText)) {
+                        return currentWords;
+                    }
+
+                    const updatedWords = [...currentWords, result.selectedText];
+                    setValData("words-data", updatedWords);
+                    return updatedWords;
+                });
+
+
+                chrome.storage.local.remove("selectedText");
+            }
+        });
+    }, []);
+
+    useEffect(() =>
+    {
         const fetchTranslations = async () =>
         {
             const newTranslations: Record<string, string> = {};
-            for (const word of addedWords) {
+            for (const word of addedWords)
+            {
                 newTranslations[word] = await TranslateApi(word.toLowerCase());
             }
             setTranslations(newTranslations);
@@ -51,12 +84,9 @@ export const Homepage: React.FC = () =>
         fetchTranslations();
     }, [addedWords]);
 
-    const openExtension = () =>
-    {
-        navigate("/");
-        const url = "chrome-extension://jfkpfocnjofoibmcihgfhibpeionpidf/index.html#learnpage";
-        window.open(url, "_blank");
-    };
+
+    const openExtension = () => window.open("chrome-extension://jfkpfocnjofoibmcihgfhibpeionpidf/index.html#/learnpage", "_blank");
+
 
     return (
         <>
@@ -96,13 +126,15 @@ export const Homepage: React.FC = () =>
                                                                 onClick={async () =>
                                                                 {
                                                                     await addWordsToBank(userId, word);
-                                                                    removeAddedWords(word, index);
+                                                                    const updatedWords = addedWords.filter((_, i) => i !== index);
+                                                                    await setValData("words-data", updatedWords);
+                                                                    setAddedWords(updatedWords);
                                                                 }}
                                                         >
                                                             <IoMdAddCircleOutline size={18} />
                                                         </button>
                                                         <button className="dark:text-white rounded-md border border-transparent p-1 text-center text-sm transition-all disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button"
-                                                            onClick={() => removeAddedWords(word, index)}>
+                                                            onClick={() => removeAddedWords(word)}>
                                                             <FaTrashAlt size={15} />
                                                         </button>
                                                     </div>

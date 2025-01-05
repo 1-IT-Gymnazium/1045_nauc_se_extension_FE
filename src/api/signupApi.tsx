@@ -1,31 +1,48 @@
 import { Globals } from "..";
 
-export const signupUser = async (username: string, email: string, password: string, level: string) =>
+/**
+ * Signs up a new user.
+ *
+ * @async
+ * @function signupUser
+ * @param {string} username - User's username.
+ * @param {string} email - User's email.
+ * @param {string} password - User's password.
+ * @param {string} level - User's level.
+ * @returns {Promise<boolean>} A promise that resolves when is valid.
+ * @throws {Error} Catch error from API.
+ */
+
+export const signupUser = async (username: string, email: string, password: string, level: string) : Promise<boolean> =>
 {
     try
     {
         const response = await fetch(`${Globals.apiUrl}/signupuser`,
         {
-            method: "POST",
-            headers:
+            method : "POST",
+            headers :
             {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ name: username, email, password, level }),
+            body: JSON.stringify(
+            {
+                name: username,
+                email,
+                password,
+                level,
+            }),
         });
 
-        if (response.ok)
+        if (!response.ok)
         {
-            return { success: true };
+            const errorData = await response.json();
+            throw new Error(errorData.error);
         }
-        else
-        {
-            const data = await response.json();
-            return { success: false, error: data.error || "Signup Error" };
-        }
+
+        return true;
     }
-    catch (error)
+    catch (err)
     {
-        return { success: false, error: "An unexpected error occurred. Please try again later." };
+        throw new Error(`${(err as Error)?.message || err}`);
     }
 };

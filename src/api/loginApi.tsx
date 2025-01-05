@@ -1,7 +1,21 @@
 import { setValData } from "../services/getDataChrome";
 import { Globals } from "..";
 
-export const LoginApi = async (username: string, password: string) =>
+/**
+ * Make login connection based on username and password.
+ *
+ * @async
+ * @function LoginApi
+ * @param {string} id - Users username.
+ * @param {string} password - Users password.
+ * @returns {data} Return users data back with his level
+ * @throws {Error} Catch error from API.
+ */
+
+
+
+
+export const LoginApi = async (username: string, password: string)=>
 {
     try
     {
@@ -23,7 +37,7 @@ export const LoginApi = async (username: string, password: string) =>
         if (!response.ok)
         {
             const errorData = await response.json();
-            throw new Error(errorData.error || "Error Login");
+            throw new Error(errorData.error);
         }
 
         const data = await response.json();
@@ -36,6 +50,6 @@ export const LoginApi = async (username: string, password: string) =>
     }
     catch (err: any)
     {
-        throw err;
+        throw new Error(`${(err as Error)?.message || err}`);
     }
 };

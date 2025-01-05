@@ -1,53 +1,54 @@
+/**
+ * Creates a context menu item in the Chrome extension.
+*/
+
 if (typeof chrome !== 'undefined' && chrome.contextMenus)
 {
     chrome.contextMenus.create(
     {
         id: "naučse",
         title: "naučse",
-        contexts: ["all"]
+        contexts: ["selection"]
     });
 }
 
 
-chrome.contextMenus.onClicked.addListener((info) =>
+/**
+ * Handles the context menu click, it will then update in the storage
+ *
+ *
+ * @async
+ * @function handleContextMenuClick
+ * @param {chrome.contextMenus.OnClickData} info - Data about the context menu item click.
+ */
+const handleContextMenuClick = async (info) =>
 {
     if (info.selectionText !== null)
     {
-        updateStorage(info);
-        chrome.action.openPopup();
-    }
-});
-
-
-const updateStorage = async (text, info) =>
-{
-    try
-    {
-        await setData(text, info.selectionText);
-    }
-    catch (err)
-    {
-        console.error(err);
-    }
-};
-
-
-const setData = async (key, value) =>
-{
-    return new Promise((resolve, reject) =>
-    {
-            chrome.storage.local.set({ [key]: value }, () =>
+        try
         {
-            if (chrome.runtime.lastError)
+            await new Promise((resolve, reject) =>
             {
-                reject(chrome.runtime.lastError);
-            }
-            else
-            {
-                resolve();
-            }
+                chrome.storage.local.set({ "selectedText": info.selectionText }, () =>
+                {
+                    if (chrome.runtime.lastError)
+                    {
+                        reject(chrome.runtime.lastError);
+                    }
+                    else
+                    {
+                        resolve();
+                    }
+                });
             });
-    });
+
+            chrome.action.openPopup();
+        }
+        catch (err)
+        {
+            console.error(err);
+        }
+    }
 };
 
-// "chrome-extension://jfkpfocnjofoibmcihgfhibpeionpidf/*"
+chrome.contextMenus.onClicked.addListener(handleContextMenuClick);

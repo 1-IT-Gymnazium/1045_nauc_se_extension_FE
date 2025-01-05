@@ -4,6 +4,9 @@ import App from "./App";
 import "./www/dist/css/main.min.css?";
 import reportWebVitals from "./reportWebVitals";
 
+/**
+ * Globals configuration.
+ */
 export const Globals =
 {
     extensionName : "Nauč-se",

@@ -1,5 +1,16 @@
 import { Globals } from "..";
 
+/**
+ * Translates the given text using the translation API in the backend.
+ *
+ *
+ * @async
+ * @function TranslateApi
+ * @param {string} textToTranslate - Text to be translated.
+ * @returns {Promise<string>}  A promise that resolves when is valid.
+ * @throws {Error}  Catch error from API.
+ */
+
 export const TranslateApi = async (textToTranslate: string): Promise<string> =>
 {
     try
@@ -11,13 +22,16 @@ export const TranslateApi = async (textToTranslate: string): Promise<string> =>
             {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ text: textToTranslate }),
+            body: JSON.stringify(
+            {
+                text : textToTranslate
+            }),
         });
 
         if (!response.ok)
         {
             const errorData = await response.json();
-            throw new Error(errorData.error || "Translation failed");
+            throw new Error(errorData.error);
         }
 
         const data = await response.json();
@@ -25,6 +39,6 @@ export const TranslateApi = async (textToTranslate: string): Promise<string> =>
 
     } catch (err)
     {
-        return "Translation failed";
+        throw new Error(`${(err as Error)?.message || err}`);
     }
 };

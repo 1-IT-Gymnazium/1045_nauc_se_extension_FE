@@ -4,96 +4,204 @@ import { LoadingBlock } from "../blocks/loadingBlock";
 
 declare global
 {
-    interface Window {
+
+    /**
+    * Function to capture clicks by the user so it can be processed.
+    * @param {MouseEvent} event - Mouse event on click.
+    */
+    interface Window
+    {
         captureWord: (event: MouseEvent) => void;
+        currentBox: HTMLElement | null;
     }
 }
 
-export const WordHighlighter: React.FC = () =>
+/**
+ * Used for calling the whole proccess and invidual functions.
+* @component
+* @function
+* @returns {React.ReactElement} - Based on the state it is in.
+*/
+
+export const WordHighlighter : React.FC = () =>
 {
     const { scrapedData, loading, error } = useScrapedData();
 
-    useEffect(() => {
-        if (!loading && scrapedData) {
+    useEffect(() =>
+    {
+        if (!loading && scrapedData)
+        {
             const wordsToHighlight = WordsToHighlight(scrapedData);
             const wordIdMapping = GenerateWordId(wordsToHighlight);
             storeWordsAndHighlight(wordIdMapping);
         }
     }, [scrapedData, loading]);
 
-    if (loading) return <LoadingBlock/>
+    if (loading) return <LoadingBlock />
     if (error) return <div>Error: {error}</div>;
-
     return null;
 };
 
+/**
+ * Text to highlights based on regex
+ * @param {string} text - The text that should be used.
+ * @returns {string[]} - Words to be highlighted.
+ */
 
-
-
-
-const WordsToHighlight = (text: string): string[] => {
+const WordsToHighlight = (text: string) : string[] =>
+{
     const words = text.match(/\b\w+\b/g);
     return words ? Array.from(new Set(words)) : [];
 };
 
-const GenerateWordId = (words: string[]): Record<string, string> => {
-    return words.reduce((acc, word, index) => {
+/**
+ * Generates a unique ID to better find the words later on.
+ * @param {string[]} words - List of words to highlight.
+ * @returns {Record<string, string>} - Return a Record of words with the word "word" : "word-index".
+ */
+
+const GenerateWordId = (words: string[]): Record<string, string> =>
+{
+    return words.reduce((acc, word, index) =>
+    {
         acc[word] = `word-${index}`;
         return acc;
     }, {} as Record<string, string>);
 };
 
-const storeWordsAndHighlight = (wordIdMapping: Record<string, string>) => {
-    chrome.storage.local.set({ wordIdMapping }, () => {
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            if (tabs[0]?.id) {
-                chrome.scripting.executeScript({
+/**
+ * Uses the words stored to then be highlighted.
+ * @param {Record<string, string>} wordIdMapping -  Record of words with the word "word" : "word-index".
+ */
+
+const storeWordsAndHighlight = (wordIdMapping: Record<string, string>) =>
+{
+    chrome.storage.local.set({ wordIdMapping }, () =>
+    {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) =>
+        {
+            if (tabs[0]?.id)
+            {
+                chrome.scripting.executeScript(
+                {
                     target: { tabId: tabs[0].id },
-                    func: (mapping) => {
+                    /**
+                     *
+                     * @param mapping
+                     */
+                    func: (mapping) =>
+                    {
+                        window.currentBox = null;
+
                         const words = Object.keys(mapping);
                         const regex = new RegExp(`\\b(${words.join("|")})\\b`, "gi");
 
-                        const walkTextNodes = (node: Node) => {
-                            if (node.nodeType === Node.TEXT_NODE) {
+
+                        /**
+                         * Walks through the HTML code in the document and highlights matching words and changes the structure of it.
+                         * @param {Node} node - The current node / item that is being processed.
+                         */
+
+                        const walkTextNodes = (node: Node) =>
+                        {
+                            if (node.nodeType === Node.TEXT_NODE)
+                            {
                                 const textNode = node as Text;
                                 const originalText = textNode.textContent || "";
-                                const newText = originalText.replace(regex, (match) => {
+
+                                /**
+                                 * Replaces the structure of any element like P, H, or A tags and add span and color to it.
+                                 * @param {match} string that replaces the with the word-id
+                                 */
+                                const newText = originalText.replace(regex, (match) =>
+                                {
                                     const id = mapping[match];
                                     return `<span class="highlighted-word" data-id="${id}" data-word="${match}" style="color: red; font-weight: bold; cursor: pointer;">${match}</span>`;
                                 });
-                                if (newText !== originalText) {
+                                if (newText !== originalText)
+                                {
                                     const span = document.createElement("span");
                                     span.innerHTML = newText;
                                     textNode.replaceWith(span);
                                 }
-                            } else {
+                            }
+                            else
+                            {
                                 node.childNodes.forEach(walkTextNodes);
                             }
                         };
 
                         walkTextNodes(document.body);
 
+                        /**
+                         * Removes the word box of a highlighted text
+                         */
+                        const removeCurrentBox = () =>
+                        {
+                            if (window.currentBox)
+                            {
+                                window.currentBox.remove();
+                                window.currentBox = null;
+                            }
+                        };
+
                         const highlightedWords = document.querySelectorAll(".highlighted-word");
-                        highlightedWords.forEach((wordElement) => {
-                            if (wordElement instanceof HTMLElement) {
-                                wordElement.addEventListener("mouseenter", (event) => {
-                                    const word = (event.target as HTMLElement).dataset.word;
+                        highlightedWords.forEach((wordElement) =>
+                        {
+                            if (wordElement instanceof HTMLElement)
+                            {
+                                wordElement.addEventListener("mouseenter", (event) =>
+                                {
+
+                                    removeCurrentBox();
+                                    /**
+                                     * Box styling and the scroll of button math
+                                     */
+
                                     const box = document.createElement("div-box");
-                                    box.innerHTML = `<button class="add-word-btn text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">Add</button>`;
+                                    const button = document.createElement("button");
+                                    button.style.cssText = `
+                                        color: white;
+                                        background-color: #1d4ed8;
+                                        padding: 10px 20px;
+                                        border-radius: 8px;
+                                        font-size: 14px;
+                                        font-weight: 500;
+                                        border: none;
+                                        cursor: pointer;
+                                        transition: background-color 0.2s;
+                                    `;
+                                    button.textContent = "Add";
+
+                                    button.addEventListener('mouseover', () => button.style.backgroundColor = '#1e40af');
+                                    button.addEventListener('mouseout', () => button.style.backgroundColor = '#1d4ed8');
+
+                                    box.appendChild(button);
 
                                     const rect = (event.target as HTMLElement).getBoundingClientRect();
                                     box.style.position = "absolute";
-                                    box.style.left = `${rect.right + window.scrollX - 40}px`;
+                                    const boxWidth = box.offsetWidth;
+                                    box.style.left  = `${rect.left + window.scrollX + (rect.width) - (boxWidth / 2)}px`;
                                     box.style.top = `${rect.top + window.scrollY - 40}px`;
+                                    box.style.zIndex = "10000";
+
+                                    window.currentBox = box;
                                     document.body.appendChild(box);
 
-                                    const addButton = box.querySelector(".add-word-btn");
-                                    addButton?.addEventListener("click", () => {
+                                    button.addEventListener("click", () =>
+                                    {
                                         window.captureWord(event);
-                                        box.remove();
+                                        removeCurrentBox();
                                     });
 
-                                    const isMouseFar = (e: MouseEvent) => {
+                                    /**
+                                     * Checks if the mouse has is far enough to then dissapear.
+                                     * @param {MouseEvent} e - Mouse event as e
+                                     * @returns {boolean} - Return valid if it is far enough.
+                                     */
+
+                                    const isMouseFar = (e: MouseEvent) =>
+                                    {
                                         const wordRect = (event.target as HTMLElement).getBoundingClientRect();
                                         const distance = Math.sqrt(
                                             Math.pow(e.clientX - wordRect.left, 2) +
@@ -102,9 +210,16 @@ const storeWordsAndHighlight = (wordIdMapping: Record<string, string>) => {
                                         return distance > 150;
                                     };
 
-                                    const onMouseMove = (e: MouseEvent) => {
-                                        if (isMouseFar(e)) {
-                                            box.remove();
+                                    /**
+                                     *  Removes the box button
+                                     *
+                                     */
+
+                                    const onMouseMove = (e: MouseEvent) =>
+                                    {
+                                        if (isMouseFar(e))
+                                        {
+                                            removeCurrentBox();
                                             document.removeEventListener("mousemove", onMouseMove);
                                         }
                                     };
@@ -113,30 +228,39 @@ const storeWordsAndHighlight = (wordIdMapping: Record<string, string>) => {
                                 });
                             }
                         });
+                        /**
+                         * Adding the highlighted words to save it.
+                         * @async
+                         * @param {MouseEvent} e - Mouse event as e
+                         * @throws {Error} Catch any error.
+                         */
 
-                        window.captureWord = async (event: MouseEvent) => {
+                        window.captureWord = async (event: MouseEvent) =>
+                        {
                             const clickedElement = event.target as HTMLElement;
                             const clickedWord = clickedElement.dataset.word?.toLowerCase();
 
-                            if (clickedWord) {
-                                try {
+                            if (clickedWord)
+                            {
+                                try
+                                {
                                     chrome.storage.local.get(['words-data'], (result) =>
                                     {
                                         const existingWords: string[] = result['words-data'] || [];
 
-                                        if (!existingWords.includes(clickedWord.toLowerCase())) {
+                                        if (!existingWords.includes(clickedWord.toLowerCase()))
+                                        {
                                             existingWords.push(clickedWord);
-
                                             chrome.storage.local.set({ 'words-data': existingWords });
-
                                         }
                                     });
-                                } catch (err) {
-                                   throw err;
+                                }
+                                catch (err)
+                                {
+                                    throw new Error(`${(err as Error)?.message || err}`);
                                 }
                             }
                         };
-
                     },
                     args: [wordIdMapping],
                 });

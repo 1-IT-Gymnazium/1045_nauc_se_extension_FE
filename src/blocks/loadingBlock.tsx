@@ -1,5 +1,12 @@
 import React from "react"
 
+/**
+ * LoadingBlock component that displays a loading spinner and a message.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered loading block.
+ */
+
 export const LoadingBlock : React.FC = () =>
 {
     return(

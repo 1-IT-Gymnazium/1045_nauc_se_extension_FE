@@ -1,6 +1,16 @@
 import { Globals } from "..";
 
-export const CheckLoginApi = async (id : string) =>
+/**
+ * Check login by users speacial ID.
+ *
+ * @async
+ * @function CheckLoginApi
+ * @param {string} id - Users ID.
+ * @returns {Promise<boolean>} Promise that will resolve if it is true or false.
+ * @throws {Error} Catch error from API.
+ */
+
+export const CheckLoginApi = async (id : string) : Promise<boolean> =>
 {
     try
     {
@@ -20,12 +30,13 @@ export const CheckLoginApi = async (id : string) =>
 
         if (!response.ok)
         {
-            return false;
+            const errorData = await response.json();
+            throw new Error(errorData.error);
         }
         return true;
     }
     catch (err: any)
     {
-        throw err;
+        throw new Error(`${(err as Error)?.message || err}`);
     }
 };

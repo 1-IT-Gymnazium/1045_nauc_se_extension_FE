@@ -1,5 +1,16 @@
 import { Globals } from "..";
 
+/**
+ * Fetches the user's words from the server by ID.
+ *
+ *
+ * @async
+ * @function UserWordsApi
+ * @param {string} id - User's ID.
+ * @returns {Promise<any>} A promise that resolves with the user's words data if successful
+ * @throws {Error} Catch error from API.
+ */
+
 export const UserWordsApi = async (id : string) =>
 {
     try
@@ -29,6 +40,6 @@ export const UserWordsApi = async (id : string) =>
     }
     catch (err: any)
     {
-        throw err;
+        throw new Error(`${(err as Error)?.message || err}`);
     }
 };

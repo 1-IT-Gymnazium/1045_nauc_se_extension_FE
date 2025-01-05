@@ -2,13 +2,22 @@ import { CheckLoginUtils } from "./checkLoginUtils";
 import { WordBankAddApi } from "../api/wordBankAddApi";
 import { getValData, setValData } from "../services/getDataChrome";
 
-export const HomepageUtils: React.FC = () =>
+
+
+export const HomepageUtils = () =>
 {
     CheckLoginUtils();
-    return null;
 };
 
-export const removeAddedWords = async (word: string, index: number) =>
+/**
+ * Removes added word from storage.
+* @async
+* @function
+* @param {string} id - User's ID.
+*
+*/
+
+export const removeAddedWords = async (word: string) =>
 {
 
     const storedWords : Array<string> = await getValData("words-data");
@@ -21,20 +30,41 @@ export const removeAddedWords = async (word: string, index: number) =>
     }
 };
 
+/**
+ * Removes added word from storage
+* @async
+* @function
+* @param {string} id - User's ID.
+* @param {string} word - The word that wants to be added.
+* @throws {Error} Catch error from API call.
+*
+*/
+
+
 export const addWordsToBank = async (user_id : string, word : string) =>
 {
     try
     {
         WordBankAddApi(user_id, word);
     }
-    catch (err)
+    catch (err: any)
     {
-
+        throw new Error(`${(err as Error)?.message || err}`);
     }
 
 }
 
-const removeItemByName = (arr: string[], name: string): string[] =>
+/**
+ * Remove from array unwanted word
+* @async
+* @function
+* @param {string[]} arr - Given array to work with.
+* @param {string} name - The word that wants to be removed.
+* @returns {string[]} array with the removed word.
+*
+*/
+
+const removeItemByName = (arr : string[], name : string): string[] =>
 {
     return arr.filter(item => item !== name);
 };
